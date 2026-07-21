@@ -1,0 +1,106 @@
+# 2. Hardware architecture
+
+[⬅ Back to README](../README.md) · [⬅ Previous: Introduction](01-introduction.md)
+
+## Components
+
+| Component | Qty | Notes |
+|---|:---:|---|
+| ESP32 (dual‑core, WiFi, 240 MHz, 520 KB SRAM) | 2 | One for the attack unit, one for storage/panel |
+| ESP‑01S (ESP8266) | 1 | Isolated test environment only — plays the "victim network" |
+| Arduino UNO R3 | 1 | Programmer and power source for the ESP‑01S |
+| Jumper wires (Dupont) | 20+ | Every connection is solderless |
+| Status LED | 1 | Wired to `GPIO2` on ESP32 #1 |
+| 3D‑printed case | 1 | Thingiverse model [`thing:4667813`](https://www.thingiverse.com/thing:4667813), optional |
+
+---
+
+## ESP32 #1 — Attack unit
+
+Handles the entire attack cycle: scanning, deauthentication, Evil Twin, and captive portal.
+
+### Core responsibilities
+
+- Scans nearby WiFi networks (SSID, BSSID, channel, RSSI).
+- Crafts 802.11 deauthentication management frames:
+  - Type: *Management* `0xC0`.
+  - Source MAC: spoofed from the victim AP.
+  - Destination MAC: broadcast `FF:FF:FF:FF:FF:FF`.
+- Brings up the rogue AP (Evil Twin), cloning the target's SSID with no password.
+- Wildcard DNS server:
+  ```cpp
+  dnsServer.start(53, "*", apIP);
+  ```
+  Resolves every domain to the ESP32's own IP, forcing the captive portal to appear.
+- HTTP server that renders the captive portal and processes the submitted password.
+
+### Network mode
+
+`WIFI_AP_STA` mode: the board acts as an *Access Point* (serving the portal) and as a *Station* (verifying the password against the real AP) at the same time.
+
+### Access filtering
+
+A MAC allowlist via `esp_wifi_ap_get_sta_list()` ensures only the team's own devices can see the portal during a demo.
+
+### Status LED (`GPIO2`)
+
+| LED state | Meaning |
+|---|---|
+| Off | Idle |
+| Slow blink | Deauthentication in progress |
+| Fast blink | Evil Twin active |
+| Solid on | Credential captured |
+
+---
+
+## ESP32 #2 — Storage & panel unit
+
+Receives and stores credentials, and serves the admin panel.
+
+### Core responsibilities
+
+- Receives credentials over HTTP POST from ESP32 #1 (over a dedicated WiFi link between the two boards).
+- Stores received credentials in memory (RAM).
+- Serves a web admin panel with HTTP Basic Auth and auto‑refresh, showing captured credentials live.
+
+### Why the two devices are split
+
+> [!NOTE] Single‑radio constraint
+> A single ESP32 WiFi radio can't reliably scan/attack and serve an admin panel at the same time. This is a **shared‑radio hardware limitation**, not a CPU one — the ESP32 is dual‑core, but its radio is shared across every WiFi role the chip takes on.
+
+---
+
+## Isolated test environment (ESP‑01S + Arduino UNO)
+
+The ESP‑01S acts as a lab "victim network," never touching real networks.
+
+### ESP‑01S configuration
+
+- Configured as an isolated *Access Point* via `WiFi.softAP(...)`.
+- Library: `ESP8266WiFi.h` (ESP8266 board package).
+
+### Role of the Arduino UNO R3
+
+Used exclusively as a power source and serial programmer to flash the ESP‑01S. It runs no logic of its own in this project.
+
+### Critical electrical notes
+
+> [!WARNING] Electrical safety
+> - The ESP‑01S runs exclusively on **3.3 V**. Connecting it to 5 V will permanently damage it.
+> - `GPIO0` must be tied to **GND before power‑on** to enter flash mode.
+> - The Arduino's `RESET` pin must be tied to **GND during flashing** so the ATmega doesn't interfere with the serial line.
+> - Upload speed: **115200 baud**.
+> - Every connection is made with solderless jumper wires.
+
+---
+
+## Related notes
+
+- [3. Firmware design](03-firmware-design.md) — the software running on this hardware.
+- [4. Network flow](04-network-flow.md) — how the two ESP32 boards interact over the network.
+- [5. Issues and fixes](05-issues-and-fixes.md) — issue #3 (ESP‑01S timeout) ties directly to this document's wiring notes.
+- [6. Glossary](06-glossary.md) — definitions for AP, STA, SoftAP, BSSID, RSSI.
+
+---
+
+**Next:** [3. Firmware design](03-firmware-design.md)

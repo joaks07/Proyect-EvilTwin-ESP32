@@ -1,0 +1,46 @@
+<svg width="1200" height="260" viewBox="0 0 1200 260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#39d353"/>
+      <stop offset="100%" stop-color="#58a6ff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="260" rx="14" fill="url(#bg)"/>
+
+  <!-- decorative wifi arcs -->
+  <g stroke="#39d353" stroke-width="4" fill="none" opacity="0.55">
+    <path d="M 1010 190 a 40 40 0 0 1 80 0" />
+    <path d="M 995 205 a 65 65 0 0 1 110 0" />
+    <path d="M 980 220 a 90 90 0 0 1 140 0" />
+  </g>
+  <circle cx="1050" cy="205" r="6" fill="#39d353"/>
+
+  <g stroke="#f85149" stroke-width="4" fill="none" opacity="0.85">
+    <path d="M 1010 190 a 40 40 0 0 1 80 0" stroke-dasharray="10 8" />
+  </g>
+  <circle cx="1050" cy="205" r="10" fill="none" stroke="#f85149" stroke-width="3"/>
+
+  <rect x="40" y="40" width="6" height="180" fill="url(#accent)"/>
+
+  <text x="70" y="110" font-family="Consolas, 'Courier New', monospace" font-size="46" font-weight="700" fill="#e6edf3">
+    EvilTwin <tspan fill="#39d353">ESP32</tspan>
+  </text>
+  <text x="72" y="150" font-family="Segoe UI, Arial, sans-serif" font-size="19" fill="#8b949e">
+    Educational simulation of a WiFi Evil Twin attack on embedded hardware
+  </text>
+  <text x="72" y="180" font-family="Consolas, 'Courier New', monospace" font-size="15" fill="#58a6ff">
+    isolated lab environment · strictly for educational and research purposes
+  </text>
+
+  <g font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#6e7681">
+    <text x="72" y="215">[ ESP32 x2 ]</text>
+    <text x="185" y="215">[ ESP-01S ]</text>
+    <text x="290" y="215">[ WPA2-Personal ]</text>
+    <text x="440" y="215">[ 802.11 ]</text>
+  </g>
+</svg>
