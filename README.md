@@ -8,12 +8,6 @@
 
 Originally built as a vocational‑degree capstone project (Spain's *Grado Medio SMR*, Computer Security module).
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-active%20(personal)-brightgreen)](docs/09-limitations-and-roadmap.md)
-[![Scope](https://img.shields.io/badge/repository-documentation--only-yellow)](#-about-this-repositorys-scope)
-[![Platform](https://img.shields.io/badge/platform-ESP32%20%7C%20ESP8266-informational)](docs/02-hardware-architecture.md)
-[![Use](https://img.shields.io/badge/use-educational%20%2F%20lab%20only-critical)](docs/07-security-and-legal-framework.md)
-[![Language](https://img.shields.io/badge/language-English-red)](https://github.com/joaks07/Proyecto-EvilTwin-ESP32)
 
 📖 *[Leer esta documentación en español](https://github.com/joaks07/Proyecto-EvilTwin-ESP32)*
 
