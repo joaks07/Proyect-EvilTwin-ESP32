@@ -4,9 +4,9 @@
 
 # 📡 EvilTwin ESP32
 
-**Educational simulation of a WiFi Evil Twin attack built on two ESP32 boards**, run entirely inside an isolated lab environment to demonstrate — practically and safely — real structural weaknesses in **WPA2‑Personal**.
+**Simulation of a WiFi Evil Twin attack built on two ESP32 boards**, run entirely inside an isolated lab environment to demonstrate — real structural weaknesses in **WPA2‑Personal**.
 
-Originally built as a vocational‑degree capstone project (Spain's *Grado Medio SMR*, Computer Security module) and continued as a personal cybersecurity and embedded‑hardware project.
+Originally built as a vocational‑degree capstone project (Spain's *Grado Medio SMR*, Computer Security module).
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-active%20(personal)-brightgreen)](docs/09-limitations-and-roadmap.md)
@@ -23,13 +23,8 @@ Originally built as a vocational‑degree capstone project (Spain's *Grado Medio
 
 ## ⚠️ Legal & ethical notice — read before continuing
 
-> [!CAUTION]
-> This project is **strictly educational** and intended for **cybersecurity research**. It was designed, built, and tested inside an **isolated lab environment**, using hardware owned by the project team, with no connection to production networks or to people outside the project.
->
-> - **Never use this against networks, devices, or people without explicit, written authorization** from the owner.
-> - Deauthentication and access‑point impersonation attacks against networks you don't own or aren't authorized to test **can constitute a criminal offense** in most jurisdictions — in Spain, for instance, under art. 264 bis of the Criminal Code (LO 10/1995).
 > - The author **accepts no responsibility** for any misuse, illegal use, or unauthorized use of the material in this repository.
-> - Full legal context and responsible‑use guidance live in **[docs/07-security-and-legal-framework.md](docs/07-security-and-legal-framework.md)**.
+> - Full legal context and responsible‑use guidance live in only in Spain need to check the law on your own country **[docs/07-security-and-legal-framework.md](docs/07-security-and-legal-framework.md)**.
 
 ## 📎 About this repository's scope
 
@@ -51,16 +46,14 @@ This repository holds the project's **full technical documentation**: architectu
 10. [Usage](#-usage)
 11. [Repository structure](#-repository-structure)
 12. [Firmware design](#-firmware-design)
-13. [Screenshots](#️-screenshots)
-14. [Testing performed](#-testing-performed)
-15. [Limitations](#-limitations)
+13. [Testing performed](#-testing-performed)
+14. [Limitations](#-limitations)
 16. [Future improvements / Roadmap](#️-future-improvements--roadmap)
-17. [Troubleshooting](#-troubleshooting)
-18. [FAQ](#-faq)
-19. [References](#-references)
-20. [License](#-license)
-21. [Authors & credits](#-authors--credits)
-22. [Contributing](#-contributing)
+16. [Troubleshooting](#-troubleshooting)
+17. [References](#-references)
+18. [License](#-license)
+19. [Authors & credits](#-authors--credits)
+20. [Contributing](#-contributing)
 
 ---
 
@@ -107,12 +100,11 @@ The system is built from **two ESP32 boards** with distinct roles, plus a **test
 flowchart LR
     subgraph LAB["Isolated lab environment"]
         VICT["ESP-01S<br/>(victim AP)"]
-        UNO["Arduino UNO R3<br/>(flasher / power source)"]
+        UNO["Computer/ external battery<br/>(flasher / power source)"]
         UNO -. "serial flashing 115200" .-> VICT
 
         subgraph ATK["ESP32 #1 - Attack unit"]
             SCAN["802.11 scanning"]
-            DEAUTH["Deauth 0xC0"]
             ET["Evil Twin<br/>(SoftAP, same SSID)"]
             DNS["Wildcard DNS :53"]
             HTTP["HTTP server :80<br/>(captive portal)"]
@@ -129,7 +121,6 @@ flowchart LR
     end
 
     VICT -. "beacons" .-> SCAN
-    DEAUTH -. "forces disconnect" .-> CLI
     CLI -->|"reconnects"| ET
     ET --> DNS --> HTTP --> VER
     VER -->|"HTTP POST"| RX --> RAM --> PANEL
@@ -264,10 +255,6 @@ Proyecto-EvilTwin-ESP32-English/
 
 The full function‑by‑function specification for **ESP32 #1** (attack unit) lives in [docs/03-firmware-design.md](docs/03-firmware-design.md), including the documented `wifi_send_pkt_freedom()` limitation and its researched workaround (`esp_wifi_80211_tx()` plus an override of `ieee80211_raw_frame_sanity_check()`).
 
-## 🖼️ Screenshots
-
-> [!NOTE]
-> This repository was assembled from the project's technical documentation. Real screenshots of the admin panel, captive portal, and the ESP32 #2 credentials panel are **still pending** for a future update, alongside photos of the physical build. No placeholder images are included, so as not to present an unverified result as fact.
 
 ## 🧪 Testing performed
 
@@ -288,30 +275,13 @@ Summary of the functional validation carried out during development; full detail
 - **No WPA3‑SAE support**: the project focuses exclusively on the structural weakness of WPA2‑Personal.
 - **Documentation‑only repository**: the full firmware source isn't published in this version (see [scope](#-about-this-repositorys-scope)).
 
-## 🗺️ Future improvements / Roadmap
 
-Full prioritized list in [docs/09-limitations-and-roadmap.md](docs/09-limitations-and-roadmap.md). Summary:
-
-- [ ] Real deauth via `esp_wifi_80211_tx()` plus overriding `ieee80211_raw_frame_sanity_check()`.
-- [ ] Publish the full firmware source for both ESP32 boards.
-- [ ] Serve the ESP32 #2 panel over HTTPS.
-- [ ] Persist captured credentials to LittleFS/SD.
-- [ ] Export attempt logs (CSV/JSON) from the panel.
-- [ ] REST API for querying status and logs.
-- [ ] Demo statistics (attempt count, success rate).
-- [ ] Advanced logging with levels and timestamps.
-- [ ] OLED screen for status without relying on the web panel.
-- [ ] Multi‑language support for the captive portal.
-- [ ] Battery power for portable lab operation.
-- [ ] Study the attack's viability against WPA3‑SAE networks.
 
 ## 🆘 Troubleshooting
 
 Full log of real issues and their fixes in [docs/05-issues-and-fixes.md](docs/05-issues-and-fixes.md): Unicode‑encoding compile failures, `std::vector` incompatibility under C++14, ESP‑01S flashing timeouts, and the `wifi_send_pkt_freedom()` limitation.
 
-## ❓ FAQ
 
-Frequently asked questions about scope, legality, and how the project works: [docs/10-faq.md](docs/10-faq.md).
 
 ## 📚 References
 
@@ -330,7 +300,7 @@ MIT was chosen for being a permissive, widely recognized, easy‑to‑understand
 
 ## 👤 Authors & credits
 
-- **Author:** Joaquín ([@joaks07](https://github.com/joaks07))
+- **Author:** Joaquín ([@joaks07](https://github.com/joaks07)[@JRXsec](https://github.com/JRXsec))
 - **Origin:** Capstone project — Vocational degree in Microcomputer Systems and Networks (SMR, Spain), Computer Security module.
 - **Credits:** the [ESP32Marauder](https://github.com/justcallmekoko/ESP32Marauder), [Jeija/esp32-80211-tx](https://github.com/Jeija/esp32-80211-tx), and [GANESH-ICMC/esp32-deauther](https://github.com/GANESH-ICMC/esp32-deauther) communities for their public research on raw 802.11 frame transmission on the ESP32.
 
@@ -342,6 +312,5 @@ This is currently a personal technical‑documentation project. Contributions �
 
 <div align="center">
 
-**⚠️ For educational and laboratory use only — see the [legal notice](docs/07-security-and-legal-framework.md) ⚠️**
 
 </div>
