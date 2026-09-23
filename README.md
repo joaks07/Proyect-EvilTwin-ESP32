@@ -6,7 +6,7 @@
 
 **Simulation of a WiFi Evil Twin attack built on two ESP32 boards**, run entirely inside an isolated lab environment to demonstrate — real structural weaknesses in **WPA2‑Personal**.
 
-Originally built as a vocational‑degree final project (Spain's *Grado Medio SMR*).
+Originally built as a vocational‑training final project (Spain's *Grado Medio SMR*).
 
 
 📖 *[Leer esta documentación en español](https://github.com/joaks07/Proyecto-EvilTwin-ESP32)*
