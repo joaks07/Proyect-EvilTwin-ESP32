@@ -294,7 +294,7 @@ MIT was chosen for being a permissive, widely recognized, easy‑to‑understand
 
 ## 👤 Authors & credits
 
-- **Author:** Joaquín ([@joaks07](https://github.com/joaks07)[@JRXsec](https://github.com/JRXsec))
+- **Author:** ([@joaks07](https://github.com/joaks07)[@JRXsec](https://github.com/JRXsec))
 - **Origin:** Capstone project — Vocational degree in Microcomputer Systems and Networks (SMR, Spain), Computer Security module.
 - **Credits:** the [ESP32Marauder](https://github.com/justcallmekoko/ESP32Marauder), [Jeija/esp32-80211-tx](https://github.com/Jeija/esp32-80211-tx), and [GANESH-ICMC/esp32-deauther](https://github.com/GANESH-ICMC/esp32-deauther) communities for their public research on raw 802.11 frame transmission on the ESP32.
 
