@@ -94,7 +94,7 @@ The system is built from **two ESP32 boards** with distinct roles, plus a **test
 flowchart LR
     subgraph LAB["Isolated lab environment"]
         VICT["ESP-01S<br/>(victim AP)"]
-        UNO["Computer/ external battery<br/>(flasher / power source)"]
+        UNO["Arduino 1 R3<br/>(flasher / power source)"]
         UNO -. "serial flashing 115200" .-> VICT
 
         subgraph ATK["ESP32 #1 - Attack unit"]
