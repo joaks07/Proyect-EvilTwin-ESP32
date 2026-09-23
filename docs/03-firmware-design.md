@@ -2,8 +2,6 @@
 
 [⬅ Back to README](../README.md) · [⬅ Previous: Hardware architecture](02-hardware-architecture.md)
 
-> [!NOTE] About this document
-> This section documents the **functional specification** of the firmware as it was designed and implemented during development: every function, its purpose, and its input/output contract. The full `.ino` source isn't part of this version of the repository (see the [repository's scope](../README.md#-about-this-repositorys-scope)); this specification is detailed enough for anyone comfortable with Arduino/ESP‑IDF to reproduce the implementation.
 
 ## Development stack
 
@@ -63,8 +61,7 @@ if (WiFi.status() == WL_CONNECTED) {
 
 ## Documented technical limitation
 
-> [!WARNING] `wifi_send_pkt_freedom()` unavailable
-> Sending real deauthentication frames via `wifi_send_pkt_freedom()` isn't exposed by the ESP32 Arduino Core 2.x. This was the **project's main technical limitation** in its capstone version.
+
 >
 > A researched (but not integrated) workaround exists that solves this via the `esp_wifi_80211_tx()` API plus an override of the ESP‑IDF's internal frame‑validation function. Full detail in [5. Issues and fixes](05-issues-and-fixes.md).
 
