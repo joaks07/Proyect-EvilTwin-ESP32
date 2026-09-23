@@ -85,12 +85,6 @@ Used exclusively as a power source and serial programmer to flash the ESP‑01S.
 
 ### Critical electrical notes
 
-> [!WARNING] Electrical safety
-> - The ESP‑01S runs exclusively on **3.3 V**. Connecting it to 5 V will permanently damage it.
-> - `GPIO0` must be tied to **GND before power‑on** to enter flash mode.
-> - The Arduino's `RESET` pin must be tied to **GND during flashing** so the ATmega doesn't interfere with the serial line.
-> - Upload speed: **115200 baud**.
-> - Every connection is made with solderless jumper wires.
 
 ---
 
