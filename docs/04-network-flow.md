@@ -33,8 +33,6 @@ An 802.11 *Management* frame is crafted:
 
 The frame forces every client associated with the legitimate AP to disconnect.
 
-> [!NOTE] Limitation
-> Sending deauth frames via `wifi_send_pkt_freedom()` isn't available on the ESP32 Arduino Core 2.x. See [3. Firmware design](03-firmware-design.md#documented-technical-limitation) and [5. Issues and fixes](05-issues-and-fixes.md).
 
 ## Phase 4 — Evil Twin
 
