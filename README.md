@@ -154,7 +154,6 @@ The two‑device split exists because **a single ESP32 WiFi radio can't reliably
 
 ## 🛠️ Installation & lab setup
 
-> This section describes how the physical lab environment was reproduced. Since this repository doesn't ship the firmware source (see [scope](#-about-this-repositorys-scope)), the "build and flash" steps below point to the general process documented in [docs/03-firmware-design.md](docs/03-firmware-design.md), to be reproduced against the published functional specification.
 
 1. **Set up the Arduino toolchain**
    - Install the **ESP32** board package (Espressif), Core 2.x.
