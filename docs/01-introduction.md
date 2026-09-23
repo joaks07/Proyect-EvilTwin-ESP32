@@ -17,8 +17,6 @@ This project implements the full Evil Twin attack chain — scanning, deauthenti
 
 It started as the capstone project for the Computer Security module of a vocational degree in Microcomputer Systems and Networks (SMR, Spain), and has continued since as a personal cybersecurity and embedded‑hardware project.
 
-> [!IMPORTANT] Lab environment
-> Every test runs inside an isolated environment, on hardware owned by the project team. No outside device, network, or person is ever involved or affected.
 
 ## Educational goal
 
@@ -27,13 +25,6 @@ To demonstrate, on real hardware, the structural weaknesses of WPA2‑Personal:
 - **No mutual authentication for the access point** — the 802.11/WPA2‑Personal standard never authenticates the AP's identity, only the client's password. An AP broadcasting the same SSID can impersonate the legitimate one without the client detecting it automatically.
 - **Automatic client reconnection** — devices reconnect without user input to the strongest known SSID, whether it belongs to the original AP or a clone.
 
-## Team roles
-
-| Role | Responsibility |
-|---|---|
-| Firmware & live demo | Full design and logic for both ESP32 boards |
-| Physical build | Component assembly and 3D‑printed enclosure |
-| Documentation & testing | Planning, technical documentation, and functional validation |
 
 ## Why two ESP32 boards
 
