@@ -163,6 +163,7 @@ Component details in [docs/02-hardware-architecture.md](docs/02-hardware-archite
 
 ## ⚙️ Configuration
 
+
 | Parameter | Where it's set | Notes |
 |---|---|---|
 | SSID/password for ESP32 #1's admin AP | ESP32 #1 firmware | Must be changed from any sample value before use |
