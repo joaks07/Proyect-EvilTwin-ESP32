@@ -37,10 +37,10 @@ A list of MAC addresses permitted to access a network resource. Here, it restric
 A measure of an AP's received signal power, in dBm (negative values; closer to zero means a stronger signal). Used to rank scanned networks.
 
 **SoftAP**
-An operating mode where an ESP32/ESP8266 acts as an Access Point purely in software, with no dedicated AP hardware — effectively spinning up a virtual access point from the WiFi chip itself.
+An operating mode where an ESP32 acts as an Access Point purely in software, with no dedicated AP hardware — effectively spinning up a virtual access point from the WiFi chip itself.
 
 **SPIFFS / LittleFS**
-Flash‑memory filesystems for microcontrollers (ESP32/ESP8266), used to store files (HTML, configuration) in internal flash. This project doesn't use persistent flash storage — data lives in RAM and is lost on reboot.
+Flash‑memory filesystems for microcontrollers (ESP32), used to store files (HTML, configuration) in internal flash. This project doesn't use persistent flash storage — data lives in RAM and is lost on reboot.
 
 **STA (Station)**
 A WiFi client device that connects to an AP. In `WIFI_AP_STA` mode, the ESP32 operates as an AP and an STA at the same time.

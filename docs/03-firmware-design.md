@@ -10,7 +10,6 @@
 | Environment | Arduino Web IDE |
 | Framework | ESP32 Core 2.x (C++14) |
 | ESP32 libraries | `WiFi.h`, `WebServer.h`, `DNSServer.h`, ESP‑IDF APIs (`esp_wifi_ap_get_sta_list()`) |
-| ESP‑01S libraries | `ESP8266WiFi.h` (ESP8266 board package) |
 
 ---
 

@@ -9,7 +9,7 @@
 
 This project is **strictly educational** and built for **cybersecurity research**. It was designed, built, and documented under a fixed set of rules, with no exceptions:
 
-- Every piece of hardware (both ESP32 boards, the ESP‑01S, and the Arduino UNO) belongs to the project team.
+- Every piece of hardware (both ESP32 boards) belongs to the project team.
 - The "victim network" is a WiFi network created specifically for the lab, unrelated to any production network or third party.
 - The only test client involved is a device owned by the project team, explicitly added to the MAC allowlist.
 - The project **has not been, and must never be, run against networks, devices, or people outside the lab** without explicit, written authorization from the owner.
@@ -31,7 +31,7 @@ Equivalent conduct is criminalized in essentially every Western jurisdiction und
 
 If you study, reproduce, or adapt this project:
 
-1. **Fully isolate the environment**: use your own ESP‑01S (or another AP) as the only "victim network," somewhere it won't interfere with real nearby networks.
+1. **Fully isolate the environment**: use your own AP as the only "victim network," somewhere it won't interfere with real nearby networks.
 2. **Limit the physical range**: reduce transmit power and operate in a controlled space to avoid unintentionally interfering with third‑party devices on the same channel.
 3. **Restrict portal access**: always keep the MAC allowlist active so only the team's devices can interact with the Evil Twin.
 4. **Never store real credentials**: use test‑only passwords created specifically for the lab, never personal or production credentials.

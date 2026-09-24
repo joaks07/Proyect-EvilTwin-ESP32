@@ -39,8 +39,7 @@
 
   <g font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#6e7681">
     <text x="72" y="215">[ ESP32 x2 ]</text>
-    <text x="185" y="215">[ ESP-01S ]</text>
-    <text x="290" y="215">[ WPA2-Personal ]</text>
-    <text x="440" y="215">[ 802.11 ]</text>
+    <text x="185" y="215">[ WPA2-Personal ]</text>
+    <text x="335" y="215">[ 802.11 ]</text>
   </g>
 </svg>

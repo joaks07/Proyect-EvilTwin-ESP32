@@ -12,7 +12,7 @@ Because the project's original technical documentation (kept in Obsidian during 
 Because the ESP32 has a single WiFi radio. That radio can't scan/attack on the target's channel and reliably serve a web admin panel at the same time. Splitting those two roles across two devices avoids that conflict — see [2. Hardware architecture](02-hardware-architecture.md).
 
 **Why doesn't "real" deauthentication work?**
-Because `wifi_send_pkt_freedom()` — the function classically used to send deauth frames on the ESP8266/ESP32 — isn't exposed on the ESP32 Arduino Core 2.x. A researched workaround using `esp_wifi_80211_tx()` solves this, documented in [5. Issues and fixes](05-issues-and-fixes.md), pending integration as validated firmware.
+Because `wifi_send_pkt_freedom()` — the function classically used to send deauth frames on the ESP32 — isn't exposed on the ESP32 Arduino Core 2.x. A researched workaround using `esp_wifi_80211_tx()` solves this, documented in [5. Issues and fixes](05-issues-and-fixes.md), pending integration as validated firmware.
 
 **Does this attack work against WPA3 networks?**
 That hasn't been studied. WPA3‑Enterprise with 802.1X, and Protected Management Frames (802.11w/PMF), mitigate much of this attack class by signing management frames. See [7. Security and legal framework](07-security-and-legal-framework.md#defending-against-an-evil-twin-countermeasures).

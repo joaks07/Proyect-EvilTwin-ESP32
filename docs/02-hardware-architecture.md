@@ -6,11 +6,7 @@
 
 | Component | Qty | Notes |
 |---|:---:|---|
-| ESP32 (dual‑core, WiFi, 240 MHz, 520 KB SRAM) | 2 | One for the attack unit, one for storage/panel |
-| ESP‑01S (ESP8266) | 1 | Isolated test environment only — plays the "victim network" |
-| Arduino UNO R3 | 1 | Programmer and power source for the ESP‑01S |
-| Jumper wires (Dupont) | 20+ | Every connection is solderless |
-| Status LED | 1 | Wired to `GPIO2` on ESP32 #1 |
+| ESP32 (dual‑core, WiFi, 240 MHz, 520 KB SRAM) | 2 | One for the attack unit, one for storage/panel. No wired connections between boards — communication is over WiFi |
 | 3D‑printed case | 1 | Thingiverse model [`thing:4667813`](https://www.thingiverse.com/thing:4667813), optional |
 
 ---
@@ -70,21 +66,9 @@ Receives and stores credentials, and serves the admin panel.
 
 ---
 
-## Isolated test environment (ESP‑01S + Arduino UNO)
+## Test environment
 
-The ESP‑01S acts as a lab "victim network," never touching real networks.
-
-### ESP‑01S configuration
-
-- Configured as an isolated *Access Point* via `WiFi.softAP(...)`.
-- Library: `ESP8266WiFi.h` (ESP8266 board package).
-
-### Role of the Arduino UNO R3
-
-Used exclusively as a power source and serial programmer to flash the ESP‑01S. It runs no logic of its own in this project.
-
-### Critical electrical notes
-
+For demonstrations, any WiFi network owned by the team is used as the "victim network," in an isolated space where it won't interfere with real networks or bystanders.
 
 ---
 
@@ -92,7 +76,7 @@ Used exclusively as a power source and serial programmer to flash the ESP‑01S.
 
 - [3. Firmware design](03-firmware-design.md) — the software running on this hardware.
 - [4. Network flow](04-network-flow.md) — how the two ESP32 boards interact over the network.
-- [5. Issues and fixes](05-issues-and-fixes.md) — issue #3 (ESP‑01S timeout) ties directly to this document's wiring notes.
+- [5. Issues and fixes](05-issues-and-fixes.md) — issues found during development.
 - [6. Glossary](06-glossary.md) — definitions for AP, STA, SoftAP, BSSID, RSSI.
 
 ---

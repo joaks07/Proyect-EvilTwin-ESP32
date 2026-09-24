@@ -22,23 +22,7 @@ A log of issues hit during development and how each was resolved.
 
 ---
 
-## 3. ESP‑01S flashing timeout
-
-**Cause:** `GPIO0` wasn't tied to GND before powering on the ESP‑01S, and/or `TX` wasn't wired correctly.
-
-**Fix:** corrected wiring scheme:
-
-| Condition | Action |
-|---|---|
-| Flash mode | `GPIO0` → GND **before** power‑on |
-| Keep the ATmega out of the way | Arduino UNO `RESET` → GND during flashing |
-| Speed | 115200 baud |
-
-See also [2. Hardware architecture](02-hardware-architecture.md#critical-electrical-notes).
-
----
-
-## 4. `wifi_send_pkt_freedom()` unavailable
+## 3. `wifi_send_pkt_freedom()` unavailable
 
 **Cause:** the function isn't exposed by the ESP32 Arduino Core 2.x. It's a low‑level ESP‑IDF API that the Arduino wrapper doesn't surface in this core version.
 
@@ -77,8 +61,8 @@ This turns the capstone project's documented limitation into a real, working fea
 
 ## Related notes
 
-- [2. Hardware architecture](02-hardware-architecture.md) — issue #3 (ESP‑01S timeout) tied to wiring.
-- [3. Firmware design](03-firmware-design.md) — the documented technical limitation (issue #4).
+- [2. Hardware architecture](02-hardware-architecture.md) — the project's hardware.
+- [3. Firmware design](03-firmware-design.md) — the documented technical limitation (issue #3).
 - [4. Network flow](04-network-flow.md) — network context for each issue.
 - [9. Limitations and roadmap](09-limitations-and-roadmap.md) — tracking the workaround as future work.
 

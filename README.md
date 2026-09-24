@@ -8,6 +8,12 @@
 
 Originally built as a vocational‑training final project (Spain's *Grado Medio SMR*).
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-active%20(personal)-brightgreen)](docs/09-limitations-and-roadmap.md)
+[![Scope](https://img.shields.io/badge/repository-documentation%20%2B%20firmware-yellow)](#-about-this-repositorys-scope)
+[![Platform](https://img.shields.io/badge/platform-ESP32-informational)](docs/02-hardware-architecture.md)
+[![Use](https://img.shields.io/badge/use-educational%20%2F%20lab%20only-critical)](docs/07-security-and-legal-framework.md)
+[![Language](https://img.shields.io/badge/language-English-red)](https://github.com/joaks07/Proyecto-EvilTwin-ESP32)
 
 📖 *[Leer esta documentación en español](https://github.com/joaks07/Proyecto-EvilTwin-ESP32)*
 
@@ -22,7 +28,7 @@ Originally built as a vocational‑training final project (Spain's *Grado Medio 
 
 ## 📎 About this repository's scope
 
-This repository holds the project's **full technical documentation**: architecture, firmware design, the attack's network flow, issues found and fixed during development, and a technical glossary. **It does not ship the firmware source (`.ino`/`.cpp`) as a deliverable of this version** — it does ship the complete functional specification (each function's name, purpose, and contract) that the firmware was built against, so the design is fully reproducible by anyone comfortable with Arduino/ESP‑IDF. Publishing the full firmware source is tracked as a future milestone (see [Roadmap](docs/09-limitations-and-roadmap.md)).
+This repository holds the project's **full technical documentation** along with the **sanitized firmware source** in the `firmware/` folder. The code is ready to compile and flash onto two ESP32 boards — just change the generic credentials to your own before use.
 
 ---
 
@@ -60,7 +66,7 @@ The attack works because **802.11 / WPA2‑Personal** has two structural gaps:
 - **No mutual authentication**: the client proves it knows the password, but the access point never proves its identity back. Nothing stops another device from broadcasting the same `SSID`.
 - **Silent auto‑reconnect**: modern operating systems reconnect to the strongest known `SSID` in range without asking the user first.
 
-This project implements that attack end‑to‑end — scanning, deauthentication, Evil Twin, captive portal, credential verification, and logging — using **two ESP32 boards** with distinct roles, running against a **self‑contained, isolated test network** (an ESP‑01S standing in for the "victim network," flashed via an Arduino UNO). Extended write‑up in [docs/01-introduction.md](docs/01-introduction.md).
+This project implements that attack end‑to‑end — scanning, deauthentication, Evil Twin, captive portal, credential verification, and logging — using **two ESP32 boards** with distinct roles, running against a **self‑contained, isolated test network**. Extended write‑up in [docs/01-introduction.md](docs/01-introduction.md).
 
 ## 🎯 Goals
 
@@ -82,20 +88,17 @@ This project implements that attack end‑to‑end — scanning, deauthenticatio
 
 ## 🏗️ Project architecture
 
-The system is built from **two ESP32 boards** with distinct roles, plus a **test environment** based on an ESP‑01S flashed via an Arduino UNO.
+The system is built from **two ESP32 boards** with distinct roles, operating inside an **isolated lab environment** against the team's own WiFi network.
 
 | Device | Role |
 |---|---|
 | **ESP32 #1** | Attack unit: scanning · deauthentication · Evil Twin · captive portal · credential verification |
 | **ESP32 #2** | Storage & panel unit: receives over HTTP POST · stores in RAM · web panel with basic auth |
-| **"Victim network"** | An ESP‑01S configured as an isolated access point, dedicated to the lab |
 
 ```mermaid
 flowchart LR
     subgraph LAB["Isolated lab environment"]
-        VICT["ESP-01S<br/>(victim AP)"]
-        UNO["Arduino 1 R3<br/>(flasher / power source)"]
-        UNO -. "serial flashing 115200" .-> VICT
+        VICT["Target AP<br/>(team-owned network)"]
 
         subgraph ATK["ESP32 #1 - Attack unit"]
             SCAN["802.11 scanning"]
@@ -126,11 +129,7 @@ The two‑device split exists because **a single ESP32 WiFi radio can't reliably
 
 | Component | Qty | Required | Description |
 |---|:---:|:---:|---|
-| **ESP32** (dual‑core, WiFi, 240 MHz, 520 KB SRAM) | 2 | ✅ | One for the attack unit (ESP32 #1), one for storage/panel (ESP32 #2) |
-| **ESP‑01S** (ESP8266) | 1 | ✅ | Stands in as the "victim network" inside the isolated test environment |
-| **Arduino UNO R3** | 1 | ✅ | Programmer and power source for the ESP‑01S |
-| **Jumper wires (Dupont)** | 20+ | ✅ | Every connection is solderless |
-| **Status LED** | 1 | ✅ | Wired to `GPIO2` on ESP32 #1, indicates attack state |
+| **ESP32** (dual‑core, WiFi, 240 MHz, 520 KB SRAM) | 2 | ✅ | One for the attack unit (ESP32 #1), one for storage/panel (ESP32 #2). No wired connections between boards — communication is over WiFi |
 | **3D‑printed case** | 1 | ⬜ Optional | Thingiverse model [`thing:4667813`](https://www.thingiverse.com/thing:4667813) |
 
 ## 💻 Software used
@@ -140,14 +139,12 @@ The two‑device split exists because **a single ESP32 WiFi radio can't reliably
 | Development environment | Arduino Web IDE (or the desktop Arduino IDE) |
 | Framework | ESP32 Core **2.x** (C++14) |
 | Board package (ESP32) | Espressif's ESP32 board support |
-| Board package (ESP‑01S) | ESP8266 board support |
 | ESP32 libraries | `WiFi.h` · `WebServer.h` · `DNSServer.h` · ESP‑IDF APIs (e.g. `esp_wifi_ap_get_sta_list()`) |
-| ESP‑01S libraries | `ESP8266WiFi.h` (ESP8266 board package) |
 
 ## ✅ Requirements
 
-- Two ESP32 boards and one ESP‑01S, plus an Arduino UNO R3 to flash the latter.
-- Arduino IDE (or Arduino Web IDE) with the ESP32 and ESP8266 board packages installed.
+- Two ESP32 boards.
+- Arduino IDE (or Arduino Web IDE) with the ESP32 board package installed.
 - A test client device (phone or laptop) **owned by the team**, to validate the captive‑portal flow.
 - A physically isolated space where the "victim" AP won't interfere with real networks or bystanders.
 - Working knowledge of C++ for Arduino, 802.11 networking, and DNS/HTTP (see the [Glossary](docs/06-glossary.md)).
@@ -157,18 +154,12 @@ The two‑device split exists because **a single ESP32 WiFi radio can't reliably
 
 1. **Set up the Arduino toolchain**
    - Install the **ESP32** board package (Espressif), Core 2.x.
-   - Install the **ESP8266** board package (needed for the ESP‑01S).
    - Confirm `WiFi.h`, `WebServer.h`, and `DNSServer.h` are available (bundled with the ESP32 core).
-2. **Implement and flash the ESP32 #1 firmware** (attack unit), following the function spec in [docs/03-firmware-design.md](docs/03-firmware-design.md).
-3. **Implement and flash the ESP32 #2 firmware** (storage/panel) onto the second board.
-4. **Flash the ESP‑01S** (lab victim network):
-   - Wire it to the Arduino UNO R3 at **3.3 V** (5 V will permanently damage it).
-   - `GPIO0` to **GND before power‑on** (flash mode).
-   - Arduino `RESET` to **GND** during flashing.
-   - Upload at **115200 baud**.
-5. **First boot**: power all three devices inside the isolated environment. The LED on ESP32 #1 reports status (see the table under [Usage](#-usage)).
+2. **Compile and flash the ESP32 #1 firmware** (attack unit) from `firmware/EvilTwin_CaptivePortal.ino`.
+3. **Compile and flash the ESP32 #2 firmware** (storage/panel) from `firmware/ESP32_Exfiltrador.ino`.
+4. **First boot**: power both ESP32 boards inside the isolated environment. The LED on ESP32 #1 reports status (see the table under [Usage](#-usage)).
 
-Wiring diagrams and electrical notes live in [docs/02-hardware-architecture.md](docs/02-hardware-architecture.md).
+Component details in [docs/02-hardware-architecture.md](docs/02-hardware-architecture.md).
 
 ## ⚙️ Configuration
 
@@ -231,7 +222,7 @@ Proyecto-EvilTwin-ESP32-English/
 ├── .gitignore
 └── docs/
     ├── 01-introduction.md             <- overview and educational goals
-    ├── 02-hardware-architecture.md    <- physical components and wiring
+    ├── 02-hardware-architecture.md    <- physical components
     ├── 03-firmware-design.md          <- firmware functional specification
     ├── 04-network-flow.md             <- the attack, phase by phase
     ├── 05-issues-and-fixes.md         <- issues found and fixed during development
@@ -253,7 +244,7 @@ The full function‑by‑function specification for **ESP32 #1** (attack unit) l
 
 Summary of the functional validation carried out during development; full detail in [docs/08-testing-and-results.md](docs/08-testing-and-results.md):
 
-- Successful compilation and flashing of both ESP32 boards and the ESP‑01S, after resolving encoding and STL issues (see [Issues and fixes](docs/05-issues-and-fixes.md)).
+- Successful compilation and flashing of both ESP32 boards, after resolving encoding and STL issues (see [Issues and fixes](docs/05-issues-and-fixes.md)).
 - Verified scanning of nearby networks with correct RSSI ranking inside the isolated environment.
 - Confirmed the native "network requires sign‑in" prompt fires on both iOS and Android once wildcard DNS is active.
 - Verified password checks against the real AP via `WiFi.status() == WL_CONNECTED`.
@@ -272,7 +263,7 @@ Summary of the functional validation carried out during development; full detail
 
 ## 🆘 Troubleshooting
 
-Full log of real issues and their fixes in [docs/05-issues-and-fixes.md](docs/05-issues-and-fixes.md): Unicode‑encoding compile failures, `std::vector` incompatibility under C++14, ESP‑01S flashing timeouts, and the `wifi_send_pkt_freedom()` limitation.
+Full log of real issues and their fixes in [docs/05-issues-and-fixes.md](docs/05-issues-and-fixes.md): Unicode‑encoding compile failures, `std::vector` incompatibility under C++14, and the `wifi_send_pkt_freedom()` limitation.
 
 
 

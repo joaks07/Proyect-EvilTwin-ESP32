@@ -13,7 +13,7 @@ The attack rides on two structural properties of the **802.11 / WPA2‑Personal*
 
 ## Project description
 
-This project implements the full Evil Twin attack chain — scanning, deauthentication, access‑point impersonation, captive portal, credential verification, and logging — using **two ESP32 boards** with distinct roles, on top of an **isolated lab environment**: an ESP‑01S plays the "victim network," flashed through an Arduino UNO R3 that only ever acts as a programmer/power source.
+This project implements the full Evil Twin attack chain — scanning, deauthentication, access‑point impersonation, captive portal, credential verification, and logging — using **two ESP32 boards** with distinct roles, on top of an **isolated lab environment** with the team's own WiFi network as the test target.
 
 It started as the capstone project for the Computer Security module of a vocational degree in Microcomputer Systems and Networks (SMR, Spain), and has continued since as a personal cybersecurity and embedded‑hardware project.
 

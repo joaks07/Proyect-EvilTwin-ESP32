@@ -41,7 +41,7 @@ Rough prioritization, from highest to lowest impact on the project's educational
 
 | Platform | Approx. cost | Advantage | Limitation vs. this project |
 |---|---|---|---|
-| **2× ESP32 + ESP‑01S (this project)** | Low (< €20) | Fully self‑contained, great for low‑level learning (raw 802.11, DNS, HTTP) | Single radio per chip, no native deauth on Core 2.x |
+| **2× ESP32 (this project)** | Low (< €15) | Fully self‑contained, great for low‑level learning (raw 802.11, DNS, HTTP) | Single radio per chip, no native deauth on Core 2.x |
 | Raspberry Pi + `hostapd`/`airgeddon` | Medium | More compute power, full Linux ecosystem | Less "pure embedded hardware"; needs an external WiFi adapter in monitor mode |
 | WiFi Pineapple | High | Mature, commercial pentesting tool | Lower educational value at the firmware/protocol level; closed box |
 | Flipper Zero + WiFi module | Medium | Portable, multi‑purpose RF attack platform | More general‑purpose ecosystem, less focused on the full Evil Twin flow |

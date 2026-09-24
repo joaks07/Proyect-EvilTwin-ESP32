@@ -13,7 +13,6 @@ Summary of the functional validation carried out during development, broken down
 | ESP32 #1 firmware compiles in the Arduino Web IDE | ✅ Succeeds, after fixing Unicode‑encoding issues (see [5. Issues and fixes](05-issues-and-fixes.md#1-compile-failures-in-the-arduino-web-ide)) |
 | ESP32 #2 firmware compiles | ✅ Succeeds |
 | `std::vector` replaced with static arrays | ✅ Stable compilation under C++14 / Core 2.x |
-| ESP‑01S flashed via Arduino UNO | ✅ Succeeds, after fixing the `GPIO0`/`RESET` wiring (see [5. Issues and fixes](05-issues-and-fixes.md#3-esp-01s-flashing-timeout)) |
 
 ## Scanning and target selection
 
