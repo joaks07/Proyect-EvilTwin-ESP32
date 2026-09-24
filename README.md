@@ -42,7 +42,8 @@ This repository holds the project's **full technical documentation** along with 
 6. [Software used](#-software-used)
 7. [Requirements](#-requirements)
 8. [Installation & lab setup](#️-installation--lab-setup)
-9. [Configuration](#-configuration)
+9. [**Step-by-step guide (with screenshots)**](docs/step-by-step-guide.md)
+10. [Configuration](#-configuration)
 10. [Usage](#-usage)
 11. [Repository structure](#-repository-structure)
 12. [Firmware design](#-firmware-design)
@@ -161,6 +162,8 @@ The two‑device split exists because **a single ESP32 WiFi radio can't reliably
 
 Component details in [docs/02-hardware-architecture.md](docs/02-hardware-architecture.md).
 
+> 📘 **New here?** Follow the **[Step-by-Step Laboratory Setup Guide](docs/step-by-step-guide.md)** — a complete walkthrough with screenshots covering every step from installing the Arduino IDE to verifying credential capture.
+
 ## ⚙️ Configuration
 
 | Parameter | Where it's set | Notes |
@@ -231,8 +234,10 @@ Proyecto-EvilTwin-ESP32-English/
     ├── 08-testing-and-results.md      <- functional validation performed
     ├── 09-limitations-and-roadmap.md  <- known limitations and future work
     ├── 10-faq.md                      <- frequently asked questions
+    ├── step-by-step-guide.md          <- full setup walkthrough with screenshots
     └── images/
-        └── banner.svg
+        ├── banner.svg
+        └── guide/                     <- 14 screenshots for the step-by-step guide
 ```
 
 ## 🧩 Firmware design
