@@ -127,7 +127,7 @@ Open the Captive Portal firmware file (`EvilTwin_CaptivePortal.ino`) and upload 
 3. A login page should open automatically. If it does not, navigate manually to:
 
    ```
-   http://192.168.10.1/panel
+   http://192.168.10.1/recv
    ```
 
 4. Enter the panel credentials:
